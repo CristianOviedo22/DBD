@@ -1,0 +1,156 @@
+drop table if exists realiza;
+drop table if exists aterriza;
+drop table if exists transporta;
+drop table if exists cubre;
+drop table if exists empleado;
+drop table if exists muelle;
+drop table if exists auxiliar_vuelo;
+drop table if exists piloto;
+drop table if exists mantenimiento;
+drop table if exists avion;
+drop table if exists sucursal_aerolinea;
+drop table if exists escala;
+drop table if exists cargo;
+drop table if exists aeropuerto;
+drop table if exists ruta;
+drop table if exists aerolinea;
+drop table if exists pasajero;
+
+create table pasajero (
+Cod_pasajero numeric(8) constraint pk_pasajero primary key,
+Nombre_Pasaj varchar(40) constraint nn_pasajero not null,
+Nacionalidad varchar(20),
+Fecha_nac date,
+Telefono varchar(20)
+);
+
+create table aerolinea (
+Cod_aerolinea numeric(8) constraint pk_aerolinea primary key,
+Nombre_aerolinea varchar(40) constraint nn_aerolinea not null
+);
+
+create table ruta (
+Cod_ruta numeric(8) constraint pk_ruta primary key,
+Ciudad_origen varchar(30),
+Ciudad_destino varchar(30),
+Distancia numeric(4)
+);
+
+create table aeropuerto (
+Cod_aerop numeric(8) constraint pk_aeropuerto  primary key,
+Nombre varchar(40) constraint nn_aeropuerto  not null,
+Ciudad varchar(40)
+);
+
+create table cargo (
+Cod_carg numeric(8) constraint pk_cargo  primary key,
+Nom_carg varchar(40) constraint nn_cargo  not null
+);
+
+create table escala (
+Cod_escala numeric(8) constraint pk_escala primary key,
+Ciudad varchar(50) constraint nn_escala not null
+);
+
+create table sucursal_aerolinea (
+Cod_suc_aerolinea numeric(8) constraint pk_suc_aer primary key,
+Ciudad varchar(30) constraint nn_suc_aer not null,
+Telefono varchar(20),
+Cod_aerolinea numeric(8),
+constraint fk_suc_aer foreign key(cod_aerolinea) references aerolinea(cod_aerolinea) on delete cascade
+);
+
+create table avion (
+Num_avion numeric(8) constraint pk_avion  primary key,
+Tipo_avion varchar(20) constraint nn_avion  not null,
+Capacidad numeric(3),
+Autonomia_vuelo numeric(8),
+Año_fabric numeric(4),
+Cod_aerolinea numeric(8),
+constraint fk_avion foreign key(cod_aerolinea) references aerolinea(Cod_aerolinea) on delete cascade
+);
+
+create table mantenimiento (
+Codigo_mant numeric(8) constraint pk_mantenimiento primary key,
+Descripcion_mant varchar(100) constraint nn_mantenimiento not null,
+Duracion_mant numeric(4),
+Cod_avion numeric(8),
+constraint fk_mantenimiento foreign key(cod_avion) references avion(num_avion) on delete cascade
+);
+
+create table piloto (
+Cod_pil numeric(8) constraint pk_piloto primary key,
+Nom_pil varchar(50) constraint nn_piloto not null,
+Horas_vuelo numeric(4),
+Fecha_nac date,
+Salario numeric(8),
+Cod_avion numeric(8),
+constraint fk_piloto foreign key(cod_avion) references avion(num_avion) on delete cascade
+);
+
+create table auxiliar_vuelo(
+Cod_auxiliar numeric(8) constraint pk_auxiliar_vuelo primary key,
+Nom_auxiliar varchar(50) constraint nn_auxiliar_vuelo not null,
+Gen_auxiliar varchar(2),
+Fecha_nac date,
+Salario numeric(8),
+Cod_avion numeric(8),
+constraint fk_auxiliar_vuelo foreign key(cod_avion) references avion(num_avion) on delete cascade
+);
+
+create table muelle (
+Cod_muelle numeric(8) constraint pk_muelle primary key,
+Tipo_muelle varchar(50) constraint nn_muelle not null,
+Capacidad_aviones_muelle numeric(4),
+Cod_aeropuerto numeric(8),
+constraint fk_muelle foreign key(cod_aeropuerto) references aeropuerto(Cod_aerop) on delete cascade
+);
+
+create table empleado (
+Cod_empleado numeric(8) constraint pk_empleado  primary key,
+Nom_empleado varchar(50) constraint nn_empleado not null,
+Fecha_nac_empleado date,
+Salario numeric(8),
+Cod_aeropuerto numeric(8),
+constraint fk1_empleado foreign key(cod_aeropuerto) references aeropuerto(Cod_aerop) on delete cascade,
+Cod_cargo numeric(8),
+constraint fk2_empleado foreign key(cod_cargo) references cargo(Cod_carg) on delete cascade
+);
+
+create table cubre (
+Codigo numeric(8) constraint pk_cubre primary key,
+Fecha date,
+Cod_avion numeric(8),
+constraint fk1_cubre foreign key(cod_avion) references avion(num_avion) on delete cascade,
+Cod_ruta numeric(8),
+constraint fk2_cubre foreign key(Cod_ruta) references ruta(Cod_ruta) on delete cascade
+);
+
+create table transporta (
+Fecha date,
+Cod_avion numeric(8),
+constraint fk1_transporta foreign key(cod_avion) references avion(num_avion) on delete cascade,
+Cod_pasajero numeric(8),
+constraint fk2_transporta foreign key(cod_pasajero) references pasajero(Cod_pasajero) on delete cascade,
+constraint pk_transporta primary key(fecha,cod_avion,cod_pasajero)
+);
+
+create table aterriza (
+Fecha date,
+Cod_avion numeric(8),
+constraint fk1_aterriza foreign key(cod_avion) references avion(num_avion) on delete cascade,
+Cod_aeropuerto numeric(8),
+constraint fk_aterriza foreign key(cod_aeropuerto) references aeropuerto(Cod_aerop) on delete cascade,
+constraint pk_aterriza primary key(fecha,cod_avion,cod_aeropuerto)
+);
+
+create table realiza (
+Cod_avion numeric(8),
+constraint fk1_realiza foreign key(cod_avion) references avion(num_avion) on delete cascade,
+Cod_escala numeric(8),
+constraint fk_realiza foreign key(cod_escala) references escala(Cod_escala) on delete cascade,
+Fecha date,
+constraint pk_realiza primary key(fecha,cod_avion,cod_escala)
+);
+
+

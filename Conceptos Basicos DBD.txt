@@ -1,0 +1,82 @@
+DROP TABLE IF EXISTS= (Eliminar si la tabla existe)
+si existe la tabla y si existe borra los datos y luego la tabla, pero si no existe
+en la base, el comando no hace nada y no se genera ningún error.
+
+CREATE TABLE = (Crear Tabla)
+Esta se utiliza para crear una nueva tabla donde la informacion se almacena.
+
+PRIMARY KEY= (llave primaria)
+Identifica de manera unica cada fila de una tabla.
+
+CHECK= (Comprobar )
+La restricción CHECK se utiliza para limitar el rango de valores que puede tener una columna,
+se pueden definir varias restricciones CHECK en una tabla.
+
+FOREIGN KEY = (Llave Foranea)
+Es una restricción que no permite que se agreguen o inserten datos que no válidos en la columna,
+de foreign key, ya que los valores que se van a insertar deben ser valores que se encuentren
+o ya estén en la tabla con la que se quiere relacionar.
+
+Las columnas en la tabla Referencia deben ser la Llave Primaria (Primary key)
+u otra Llave Primaria en la tabla referenciada.
+
+
+
+/** Codigo Previo1 */
+DROP TABLE IF EXISTS PRESENTACIONES;
+DROP TABLE IF EXISTS ARTISTA;
+DROP TABLE IF EXISTS GRUPO;
+DROP TABLE IF EXISTS MANEJADOR;
+DROP TABLE IF EXISTS ESCENARIO;
+
+CREATE TABLE GRUPO
+(
+	Codigo_Grupo NUMERIC(6) CONSTRAINT PK_GRUPO PRIMARY KEY,
+	Nombre_Grupo VARCHAR (30) NOT NULL,
+	Colortraje_Grupo VARCHAR (22),
+	Nro_Integrantes_Grupo NUMERIC (22) CONSTRAINT CK_GRUPO CHECK (Nro_Integrantes_Grupo NOT BETWEEN 5 AND 10)
+);
+
+CREATE TABLE MANEJADOR
+(
+	Codigo_Manejador NUMERIC (6) CONSTRAINT PK_MANEJADOR PRIMARY KEY,
+	Nombre_Manejador VARCHAR (30) NOT NULL,
+	Telefono_Manejador NUMERIC (10),
+	Especialidad_Manejador VARCHAR (15)
+);
+
+CREATE TABLE ARTISTA
+(
+	Codigo_Artista NUMERIC (6) CONSTRAINT PK_ARTISTA PRIMARY KEY,
+	Nombre_Artista VARCHAR (30) NOT NULL,
+	Fecha_Nacimiento_Artista DATE,
+	Codigo_Grupo NUMERIC(6) NOT NULL,
+	Codigo_Manejador NUMERIC (6)NOT NULL,
+	
+	CONSTRAINT FK1_ARTISTA FOREIGN KEY (Codigo_Grupo) REFERENCES GRUPO(Codigo_Grupo),
+	CONSTRAINT FK2_ARTISTA FOREIGN KEY (Codigo_Manejador) REFERENCES MANEJADOR (Codigo_Manejador) 
+);
+ CREATE TABLE ESCENARIO
+ (
+ 	Codigo_Escenario NUMERIC (6) CONSTRAINT PK_ESCENARIO PRIMARY KEY,
+	Tipo_Escenario VARCHAR (30) NOT NULL,
+	Ciudad_Escenario VARCHAR (10) CONSTRAINT CK_ESCENARIO CHECK (Ciudad_Escenario IN('MEDELLIN','CALI','BOGOTA')),
+	Capacidad_Escenario NUMERIC (150) CONSTRAINT CK2_ESCENARIO CHECK (Capacidad_Escenario>100) 
+ );
+ 
+ CREATE TABLE PRESENTACIONES
+ (
+ 	Codigo_Presentaciones NUMERIC(6) CONSTRAINT PK_PRESENTACIONES PRIMARY KEY,
+	Fecha_Presentaciones DATE,
+	Hora_Presentaciones TIME,
+	Codigo_Escenario NUMERIC (6),
+	Codigo_Artista NUMERIC (6),
+	 
+	CONSTRAINT FK_PRESENTACIONES FOREIGN KEY (Codigo_Escenario) REFERENCES ESCENARIO (Codigo_Escenario) ,
+	CONSTRAINT FK2_PRESENTACIONES FOREIGN KEY (Codigo_Artista) REFERENCES ARTISTA (Codigo_Artista) 
+	 
+ );
+ ALTER TABLE ARTISTA ADD Nacimiento_Artista VARCHAR (12) CONSTRAINT CK_ARTISTA CHECK (Nacimiento_Artista in ('RUSO','ALEMAN','ITALIANO'));
+
+
+
