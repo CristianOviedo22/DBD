@@ -1,0 +1,48 @@
+
+
+
+INSERT INTO BANCO 
+VALUES
+	(1111,'banco de bogota','20/11/2001'),
+	(2222,'banco agrario','15/04/2020');
+
+INSERT INTO CARGO 
+VALUES
+	(1111,'administrador','esta persona se encarga de administrar el banco'),
+	(2222,'asesor','esta persona es la encargada de asesorar a los clientes del banco');
+
+INSERT INTO VIGILANTE
+VALUES
+	(123,'pancracio', NULL,'M',1000),
+	(124,'lucia',3208198222,'F',1000);
+	
+INSERT INTO CLIENTE
+VALUES
+	(7878,'sergio',NULL,NULL,1000),
+	(7979,'cristian','3201111','calle 17 #3w',1000);
+	
+INSERT INTO SUCURSAL
+VALUES
+	(1212,'carrera 28 #52-10','bucaramanga',NULL,1111),
+	(1313,'carrera 38 #26-54','cali',6548494,2222);
+
+INSERT INTO CAJERO_AUTOMATICO
+VALUES
+	(4545,'calle 56 #48-12',50000,1212),
+	(4646,'carrera 32 #53-12',40000,1313);
+	
+INSERT INTO EMPLEADO
+VALUES
+	(5454,'joel','15/04/2001',NULL,1998,1212,1111,'01/09/2020'),
+	(5656,'felipe','20/11/2000',3184496,1200,1313,2222,'22/08/2015');
+
+
+INSERT INTO OPERACIONES 
+VALUES
+	(1,'07/04/2021',10,7878,1212),
+	(2,'06/04/2021',15,7979,1313);
+
+INSERT INTO NOVEDADES
+VALUES
+	(12,'08/04/2021','se fue la luz a las 18:00',123,1212),
+	(13,'08/04/2021','taparon el baño',124,1313);
