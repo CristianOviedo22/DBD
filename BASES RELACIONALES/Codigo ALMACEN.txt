@@ -1,0 +1,174 @@
+drop table if exists premios;
+drop table if exists atenciones;
+drop table if exists pagos;
+drop table if exists compras;
+drop table if exists surtidos;
+drop table if exists ventas;
+drop table if exists cajero;
+drop table if exists caja;
+drop table if exists articulo;
+drop table if exists credito;
+drop table if exists pedidos;
+drop table if exists tarjeta_premios;
+drop table if exists vendedor;
+drop table if exists departamento;
+drop table if exists area_venta;
+drop table if exists proveedor;
+drop table if exists cliente;
+drop table if exists mercaderista;
+drop table if exists sucursal;
+
+
+create table sucursal(
+codigo_suc numeric(8) constraint pk_sucursal primary key,
+ubicacion varchar(20) constraint nn_sucursal not null,
+ciudad varchar(20) constraint nn2_sucursal not null
+);
+
+create table mercaderista(
+cod_merc numeric(8) constraint pk_mercaderista primary key,
+nom_merc varchar(30) constraint nn_mercaderista not null,
+fecha_nac date,
+telefono varchar(20),
+gen_mercaderista varchar(15)
+);
+
+create table cliente(
+cod_cli numeric(8) constraint pk_cliente primary key,
+nombre_cli varchar(30) constraint nn_cliente not null,
+telefono varchar(20),
+fecha_nacimiento date
+);
+
+create table proveedor(
+codigo  numeric(8) constraint pk_proveedor primary key,
+nombre varchar(30) constraint nn_proveedor not null constraint un_proveedor unique,
+telefono varchar(15),
+ciudad varchar(15)
+);
+
+create table area_venta (
+cod_area numeric(8) constraint pk_area  primary key,
+nom_area varchar(30) constraint nn_area not null,
+ubicacion varchar(20)
+);
+
+create table departamento(
+codigo numeric(8) constraint pk_seccion  primary key,
+nombre varchar(30),
+cod_area numeric(8),
+constraint fk_seccion foreign key(cod_area) references area_venta(cod_area) on delete cascade
+);
+
+create table vendedor(
+cod_vend numeric(8) constraint pk_vendedor primary key, 
+nom_vend varchar(30) constraint nn_vendedor not null,
+fecha_nac date,
+salario numeric(6),
+cod_suc numeric(8),
+constraint fk_vendedor foreign key(cod_suc) references sucursal(codigo_suc) on delete cascade
+);
+
+create table tarjeta_premios(
+cod_tarjeta numeric(8) constraint pk_tarjeta_premios primary key,
+nombre varchar(30) constraint nn_tarjeta_premios not null
+);
+
+create table pedidos (
+num_pedido numeric(8) constraint pk_pedidos primary key,
+tipo varchar(20) constraint nn_pedidos not null,
+fecha_entrega date,
+valor_domicilio numeric(8),
+cod_cli numeric(8),
+constraint fk_pedidos foreign key(cod_cli) references cliente(cod_cli) on delete cascade
+);
+
+create table credito(
+codigo numeric(8) constraint pk_credito primary key,
+fecha_credito date,
+fecha_pago date,
+valor numeric(10),
+cod_cli numeric(8),
+constraint fk_credito foreign key(cod_cli) references cliente(cod_cli) on delete cascade
+);
+
+create table articulo(
+codigo numeric(8) constraint pk_articulo primary key,
+nombre varchar(30) constraint nn_articulo not null,
+precio numeric(6),
+cod_merc numeric(8),
+constraint fk1_articulo foreign key(cod_merc) references mercaderista(cod_merc) on delete cascade,
+cod_dpto numeric(8),
+constraint fk2_articulo foreign key(cod_dpto) references departamento(codigo) on delete cascade
+);
+
+create table caja(
+cod_caja numeric(8) constraint pk_caja primary key, 
+ubicacion varchar(20) constraint nn_caja not null
+);
+
+create table cajero(
+cod_cajero numeric(8) constraint pk_cajero primary key,
+nom_cajero varchar(30) constraint nn_cajero not null,
+genero_cajero varchar(15),
+fecha_nac date
+);
+
+create table ventas (
+codigo numeric(8) constraint pk_venta primary key,
+cod_vendedor numeric(8),
+constraint fk_vende foreign key(cod_vendedor) references vendedor(cod_vend) on delete cascade,
+cod_articulo numeric(8),
+constraint fk2_vende foreign key(cod_articulo) references articulo(codigo) on delete cascade,
+artic_vendidos numeric(6),
+fecha date
+);
+
+create table surtidos(
+num_surtido numeric(8) constraint pk_surtidos primary key,
+cod_prov numeric(8),
+constraint fk_surtidos foreign key(cod_prov) references proveedor(codigo) on delete cascade,
+cod_articulo numeric(8),
+constraint fk2_surtidos foreign key(cod_articulo) references articulo(codigo) on delete cascade,
+fecha date,
+nro_artic_surt numeric(6)
+);
+
+create table compras(
+numero numeric(8) constraint pk_compras primary key,
+cod_cli numeric(8),
+constraint fk_compras foreign key(cod_cli) references cliente(cod_cli) on delete cascade,
+cod_articulo numeric(8),
+constraint fk2_compras foreign key(cod_articulo) references articulo(codigo) on delete cascade,
+artic_comprados numeric(6),
+fecha date
+);
+
+create table pagos(
+num_pago numeric(8) constraint pk_pago primary key,
+cod_cliente numeric(8),
+constraint fk_pago foreign key(cod_cliente) references cliente(cod_cli) on delete cascade,
+cod_caja numeric(8),
+constraint fk2_pago foreign key(cod_caja) references caja(cod_caja) on delete cascade,
+fecha date,
+hora date
+);
+
+create table atenciones(
+num_atencion numeric(8) constraint pk_atenciones primary key,
+cod_cajero numeric(8),
+constraint fk_atenciones foreign key(cod_cajero) references cajero(cod_cajero) on delete cascade,
+cod_caja numeric(8),
+constraint fk2_atenciones foreign key(cod_caja) references caja(cod_caja) on delete cascade,
+fecha date
+);
+
+create table premios(
+numero numeric(8) constraint pk_premios primary key,
+cod_cli numeric(8),
+constraint fk_premios foreign key(cod_cli) references cliente(cod_cli) on delete cascade,
+cod_tarj numeric(8),
+constraint fk2_premios foreign key(cod_tarj) references tarjeta_premios(cod_tarjeta) on delete cascade,
+fecha date,
+descripcion varchar(30)
+);
